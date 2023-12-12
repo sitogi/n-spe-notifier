@@ -28,4 +28,5 @@ export type ProgramListResponse = {
   list: {
     g1: Program[];
   };
+  error?: { code: number; message: string };
 };

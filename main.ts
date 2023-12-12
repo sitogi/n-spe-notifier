@@ -1,6 +1,6 @@
 import { load } from "https://deno.land/std@0.208.0/dotenv/mod.ts";
 import { ProgramListResponse } from "./nhkApiTypes.ts";
-import { getCurrentDate, sendSlackNotification } from "./utils.ts";
+import { getCurrentJSTDate, sendSlackNotification } from "./utils.ts";
 
 Deno.cron("N spe check", "0 23 * * *", async () => {
   const env = await load();
@@ -10,15 +10,24 @@ Deno.cron("N spe check", "0 23 * * *", async () => {
     throw new Error("No API_KEY or SLACK_WEBHOOK_URL in .env file");
   }
 
-  const currentDate = getCurrentDate();
+  const currentDate = getCurrentJSTDate();
   const requestUrlWithoutKey = `https://api.nhk.or.jp/v2/pg/list/130/g1/${currentDate}.json`;
 
   console.log({ requestUrlWithoutKey });
 
   const response = await fetch(`${requestUrlWithoutKey}?key=${apiKey}`);
   const data: ProgramListResponse = await response.json();
-  const nhkProgramList = data.list.g1;
+  console.log(data);
 
+  if (data.error) {
+    await sendSlackNotification(
+      slackWebhookUrl,
+      `NHK API がエラーを返しました。エラーコード: ${data.error.code} エラーメッセージ: ${data.error.message}`
+    );
+    return;
+  }
+
+  const nhkProgramList = data.list.g1;
   const titleList = nhkProgramList.filter((program) => program.title.includes("ＮＨＫスペシャル"));
 
   await sendSlackNotification(
