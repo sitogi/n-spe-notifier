@@ -1,5 +1,5 @@
 import { notifyNhkSpecial } from "./nhkProgramNotifier.ts";
 
-Deno.cron("N spe check", "* 23 0 0 0", async () => {
+Deno.cron("N spe check", "0 23 * * *", async () => {
   await notifyNhkSpecial();
 });
