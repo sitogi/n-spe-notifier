@@ -1,11 +1,9 @@
-import { load } from "https://deno.land/std@0.208.0/dotenv/mod.ts";
 import { ProgramListResponse } from "./nhkApiTypes.ts";
 import { getCurrentJSTDate, sendSlackNotification } from "./utils.ts";
 
 Deno.cron("N spe check", "* * * * *", async () => {
-  const env = await load();
-  const apiKey = env["API_KEY"];
-  const slackWebhookUrl = env["SLACK_WEBHOOK_URL"];
+  const apiKey = Deno.env.get("API_KEY");
+  const slackWebhookUrl = Deno.env.get("SLACK_WEBHOOK_URL");
   if (!apiKey || !slackWebhookUrl) {
     throw new Error("No API_KEY or SLACK_WEBHOOK_URL in .env file");
   }
