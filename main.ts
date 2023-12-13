@@ -1,7 +1,7 @@
 import { ProgramListResponse } from "./nhkApiTypes.ts";
 import { getCurrentJSTDate, sendSlackNotification } from "./utils.ts";
 
-Deno.cron("N spe check", "* * * * *", async () => {
+Deno.cron("N spe check", "* 23 * * *", async () => {
   const apiKey = Deno.env.get("API_KEY");
   const slackWebhookUrl = Deno.env.get("SLACK_WEBHOOK_URL");
   if (!apiKey || !slackWebhookUrl) {
