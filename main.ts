@@ -1,3 +1,4 @@
+import "https://deno.land/std@0.208.0/dotenv/load.ts";
 import { ProgramListResponse } from "./nhkApiTypes.ts";
 import { getCurrentJSTDate, sendSlackNotification } from "./utils.ts";
 
