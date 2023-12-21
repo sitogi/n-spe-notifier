@@ -1,3 +1,6 @@
+// g1 は NHK 総合、s1 は BS1
+export type Service = "g1" | "s1";
+
 type Logo = {
   url: string;
   width: number;
@@ -26,7 +29,7 @@ type Program = {
 
 export type ProgramListResponse = {
   list: {
-    g1: Program[];
+    [key in Service]: Program[];
   };
   error?: { code: number; message: string };
 };
