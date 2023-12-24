@@ -1,6 +1,6 @@
 import "https://deno.land/std@0.208.0/dotenv/load.ts";
 import { deepMerge } from "https://deno.land/std@0.209.0/collections/mod.ts";
-import { ProgramListResponse, Service } from "./types.ts";
+import { ProgramListResponse, Service } from "~/nhk/types.ts";
 
 export async function getProgramList(services: Service[], jstDateStr: string, apiKey: string) {
   const tasks = services.map(async (service) => {

@@ -1,7 +1,8 @@
-import { getProgramList } from "./nhk/api.ts";
-import { getCurrentJSTDate, sendSlackNotification } from "./slack/api.ts";
+import { getProgramList } from "~/nhk/api.ts";
+import { sendSlackNotification } from "~/slack/api.ts";
+import { getCurrentJSTDate } from "~/utils/utils.ts";
 
-Deno.cron("N spe check", '0 23 * * *', async () => {
+Deno.cron("N spe check", "0 23 * * *", async () => {
   await notifyNhkSpecial();
 });
 
