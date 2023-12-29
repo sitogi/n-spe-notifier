@@ -2,7 +2,7 @@ import { getProgramList } from "~/nhk/api.ts";
 import { sendSlackNotification } from "~/slack/api.ts";
 import { getCurrentJSTDate } from "~/utils/utils.ts";
 
-Deno.cron("N spe check", "0 23 * * *", async () => {
+Deno.cron("N spe check", { hour: { every: 20 } }, async () => {
   await notifyNhkSpecial();
 });
 
@@ -18,22 +18,20 @@ async function notifyNhkSpecial() {
 
   try {
     const list = await getProgramList(["g1", "s1"], getCurrentJSTDate(), apiKey);
+    const titlesToNotify = [];
 
     // N spe
     const nhkProgramList = list.g1;
     const titles = nhkProgramList.filter((program) => program.title.includes("ＮＨＫスペシャル"));
-    await sendSlackNotification(
-      slackWebhookUrl,
-      titles.length > 0 ? titles[0].title : "今日は「NHKスペシャル」は放送しません。"
-    );
+    titles[0]?.title && titlesToNotify.push(titles[0].title);
 
     // cosmic front
     const bs1ProgramList = list.s1;
     const bs1Titles = bs1ProgramList.filter((program) => program.title.includes("コズミックフロント"));
-    await sendSlackNotification(
-      slackWebhookUrl,
-      bs1Titles.length > 0 ? bs1Titles[0].title : "今日は「コズミックフロント」は放送しません。"
-    );
+    bs1Titles[0]?.title && titlesToNotify.push(bs1Titles[0].title);
+
+    const tasks = titlesToNotify.map((title) => sendSlackNotification(slackWebhookUrl, title));
+    await Promise.all(tasks);
   } catch (e) {
     await sendSlackNotification(slackWebhookUrl, e instanceof Error ? e.message : "unexpected error");
   }
